@@ -7,7 +7,7 @@ from datetime import datetime
 import pandas as pd
 import os
 
-# Angle calculation
+
 def calculate_angle(a, b, c):
     a = np.array(a)
     b = np.array(b)
@@ -18,11 +18,11 @@ def calculate_angle(a, b, c):
         angle = 360 - angle
     return angle
 
-# Initialize mediapipe
+
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-# Streamlit UI
+
 st.set_page_config(layout='wide')
 st.title("🏋️ AI Fitness Coach")
 st.markdown("Real-time pose detection and rep counting using webcam + MediaPipe")
@@ -34,7 +34,7 @@ start_btn = st.sidebar.button("▶️ Start Workout")
 frame_placeholder = st.empty()
 rep_display = st.sidebar.empty()
 
-# Rep tracking
+
 counter = 0
 stage = None
 logs = []
@@ -59,14 +59,14 @@ if start_btn:
                 mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
                 landmarks = results.pose_landmarks.landmark
 
-                # Right arm points
+                
                 shoulder = [landmarks[12].x, landmarks[12].y]
                 elbow = [landmarks[14].x, landmarks[14].y]
                 wrist = [landmarks[16].x, landmarks[16].y]
 
                 angle = calculate_angle(shoulder, elbow, wrist)
 
-                # Rep counting
+                
                 if angle > 160:
                     stage = "down"
                 if angle < 30 and stage == "down":
@@ -78,11 +78,11 @@ if start_btn:
                         'reps': counter
                     })
 
-                # Show angle
+                
                 cv2.putText(frame, f'Angle: {int(angle)}', (30, 80),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
-            # Display rep and timer
+            
             elapsed = int(time.time() - start_time)
             cv2.putText(frame, f'Reps: {counter}', (10, 40),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
@@ -99,7 +99,7 @@ if start_btn:
         cap.release()
         cv2.destroyAllWindows()
 
-        # Save workout log
+        
         if log_enabled and logs:
             df = pd.DataFrame(logs)
             os.makedirs("logs", exist_ok=True)
